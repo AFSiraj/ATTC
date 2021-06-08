@@ -45,15 +45,23 @@ def predict():
     data = {"success": False}
 
     if flask.request.method == "POST":
-        if flask.request.files.get("image"):
-            # indicate that the request was a success
-            data["success"] = True
+        # check if the post has "image" file part
+        if 'image' not in request.files:
+            data['message'] = "No image part"
+            return flask.jsonify(data), 404
 
+        file = request.files['image']
+
+        if file.filename == '':
+            data['message'] = "No selected image"
+            return flask.jsonify(data), 404
+
+        if file:
             # read the image in PIL format
-            image = flask.request.files["image"].read()
+            image = file.read()
             image = Image.open(io.BytesIO(image))
 
-            data["filename"] = flask.request.files["image"].filename
+            data["filename"] = file.filename
 
             # preprocess the image and prepare it for classification
             resizedImage = prepare_image(image, target_size=(150, 150))
@@ -63,38 +71,10 @@ def predict():
             x = np.where(classes[0] == 1)[0][0]
 
             data["prediction"] = class_names[x]
+            data["x_value"] = str(classes)
 
-    print("data: {}".format(data))
-    print("data_type: {}".format(type(data)))
-
-    return flask.jsonify(data)
-
-
-@app.route("/json", methods=["POST"])
-def json():
-    data = {"success": False}
-
-    if flask.request.method == "POST":
-        data["input"] = request.get_json()
-
-        # indicate that the request was a success
-        data["success"] = True
-
-    print("data: {}".format(data))
-    print("data_type: {}".format(type(data)))
-
-    return flask.jsonify(data)
-
-
-@app.route("/text", methods=["POST"])
-def text():
-    data = {"success": False}
-
-    if flask.request.method == "POST":
-        data["input"] = request.form.get('image')
-
-        # indicate that the request was a success
-        data["success"] = True
+            # indicate that the request was a success
+            data["success"] = True
 
     print("data: {}".format(data))
     print("data_type: {}".format(type(data)))
