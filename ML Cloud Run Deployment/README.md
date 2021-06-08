@@ -42,7 +42,7 @@ docker push gcr.io/<PROJECT-ID>/<CONTAINER-NAME>:<TAG>
 ### Deploy to Cloud Run
 
 ```bash
-gcloud run deploy --image gcr.io/fifth-jigsaw-312604/bangkit-ml-deployment --port 5000
+gcloud run deploy --image gcr.io/<PROJECT-ID>/<CONTAINER-NAME> --port 5000
 ```
 
 ### Deploy updates (if any)
