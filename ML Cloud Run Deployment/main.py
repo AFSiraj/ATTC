@@ -73,6 +73,26 @@ def predict():
             data["prediction"] = class_names[x]
             data["x_value"] = str(classes)
 
+            # 0,2,4,7  https://storage.googleapis.com/attc-bucket/packaging/mica_green.jpg
+            # 1,5 https://storage.googleapis.com/attc-bucket/packaging/mica_toples.jpg
+            # 3 https://storage.googleapis.com/attc-bucket/packaging/cake_box.jpg
+            # 6 https://storage.googleapis.com/attc-bucket/packaging/paperkraft_box.jpg
+            if x == 0 or x == 2 or x == 4 or x == 7:
+                data["packaging_url"] = "https://storage.googleapis.com/attc-bucket/packaging/mica_green.jpg"
+                data["packaging_name"] = "Plastik Mica"
+
+            if x == 1 or x == 5:
+                data["packaging_url"] = "https://storage.googleapis.com/attc-bucket/packaging/mica_toples.jpg"
+                data["packaging_name"] = "Toples Mica"
+
+            if x == 3:
+                data["packaging_url"] = "https://storage.googleapis.com/attc-bucket/packaging/cake_box.jpg"
+                data["packaging_name"] = "Cake Box"
+
+            if x == 6:
+                data["packaging_url"] = "https://storage.googleapis.com/attc-bucket/packaging/paperkraft_box.jpg"
+                data["packaging_name"] = "Box Paperkraft"
+
             # indicate that the request was a success
             data["success"] = True
 
