@@ -1,24 +1,78 @@
-# Deployment
+# ATTC Model Deployment on Google Cloud Run
+
+deploying machine learning model using Flask framework into Google Cloud Run
+
+Prerequisite (Git Clone)
+
+- main.py (Flask App)
+- traditional_cake.h5 (Keras Machine Learning Model)
+- Dockerfile
+- requirements.txt
+
+---
+
+## To run locally
 
 ```bash
-export FLASK_APP=main
-flask run
+python3 main.py
 ```
 
+The flask server will be served on `port 5000`
 
-# Send request
+## Deployment to Google Cloud Run
 
 ```bash
-curl localhost:5000
-
-curl -X POST -d "1" localhost:5000/predict
+gcloud auth login
 ```
 
+```bash
+gcloud auth configure-docker
+```
 
-# Docker
+### Docker (make sure Run Docker first)
 
 ```bash
-docker build -t bangkit-ml-deployment:latest .
+docker build -t gcr.io/<PROJECT-ID>/<CONTAINER-NAME>:<TAG> .
+```
 
-docker run bangkit-ml-deployment:latest
+```bash
+docker push gcr.io/<PROJECT-ID>/<CONTAINER-NAME>:<TAG>
+```
+
+### Deploy to Cloud Run
+
+```bash
+gcloud run deploy --image gcr.io/fifth-jigsaw-312604/bangkit-ml-deployment --port 5000
+```
+
+### Deploy updates (if any)
+
+1. Go to Cloud Run page
+2. Select your instance (bangkit-ml-deployment)
+3. Click on `EDIT & DEPLOY NEW VERSION`
+4. Select the newly pushed container
+5. Click `DEPLOY`
+
+## Usage
+
+Endpoint
+
+```bash
+https://bangkit-ml-deployment-mxcyue5puq-et.a.run.app/predict
+```
+
+form-data
+
+```
+image : image.jpg
+```
+
+Return
+
+```bash
+{
+    "filename": "download.jpg",
+    "prediction": "kue_putri_salju",
+    "success": true,
+}
 ```
