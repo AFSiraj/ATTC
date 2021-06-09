@@ -29,7 +29,7 @@ gcloud auth login
 gcloud auth configure-docker
 ```
 
-### Docker (make sure Run Docker first)
+### Docker Build (make sure Run Docker first)
 
 ```bash
 docker build -t gcr.io/<PROJECT-ID>/<CONTAINER-NAME>:<TAG> .
@@ -46,12 +46,12 @@ gcloud run deploy --image gcr.io/<PROJECT-ID>/<CONTAINER-NAME> --port 5000
 ```
 
 ### Deploy updates (if any)
-
-1. Go to Cloud Run page
-2. Select your instance (bangkit-ml-deployment)
-3. Click on `EDIT & DEPLOY NEW VERSION`
-4. Select the newly pushed container
-5. Click `DEPLOY`
+1. Run docker build steps again
+2. Go to Cloud Run page
+3. Select your instance (bangkit-ml-deployment)
+4. Click on `EDIT & DEPLOY NEW VERSION`
+5. Select the newly pushed container
+6. Click on `DEPLOY`
 
 ## Usage
 
