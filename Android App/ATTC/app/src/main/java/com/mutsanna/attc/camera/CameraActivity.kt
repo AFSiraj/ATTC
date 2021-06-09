@@ -1,21 +1,20 @@
-package com.mutsanna.attc
+package com.mutsanna.attc.camera
+
+//import android.graphics.BitmapFactory
+//import android.os.Environment
+//import androidx.core.content.FileProvider
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-//import android.graphics.BitmapFactory
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-//import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.net.toFile
-//import androidx.core.content.FileProvider
+import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.karumi.dexter.Dexter
@@ -37,7 +36,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.*
 
 
@@ -62,15 +60,17 @@ class CameraActivity : AppCompatActivity() {
         }
 
         binding.btnUpload.setOnClickListener {
-//            createPosts()
+            createPosts()
         }
 
         //when you click on the image
         binding.imageView.setOnClickListener {
             val pictureDialog = AlertDialog.Builder(this)
             pictureDialog.setTitle("Select Action")
-            val pictureDialogItem = arrayOf("Select photo from Gallery",
-                "Capture photo from Camera")
+            val pictureDialogItem = arrayOf(
+                "Select photo from Gallery",
+                "Capture photo from Camera"
+            )
             pictureDialog.setItems(pictureDialogItem) { dialog, which ->
 
                 when (which) {
@@ -103,7 +103,8 @@ class CameraActivity : AppCompatActivity() {
             }
 
             override fun onPermissionRationaleShouldBeShown(
-                p0: PermissionRequest?, p1: PermissionToken?) {
+                p0: PermissionRequest?, p1: PermissionToken?
+            ) {
                 showRotationalDialogForPermission()
             }
         }).onSameThread().check()
@@ -121,7 +122,8 @@ class CameraActivity : AppCompatActivity() {
         Dexter.withContext(this)
             .withPermissions(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA).withListener(
+                android.Manifest.permission.CAMERA
+            ).withListener(
 
                 object : MultiplePermissionsListener {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
@@ -136,7 +138,8 @@ class CameraActivity : AppCompatActivity() {
 
                     override fun onPermissionRationaleShouldBeShown(
                         p0: MutableList<PermissionRequest>?,
-                        p1: PermissionToken?) {
+                        p1: PermissionToken?
+                    ) {
                         showRotationalDialogForPermission()
                     }
 
@@ -171,14 +174,18 @@ class CameraActivity : AppCompatActivity() {
                     val palu = MultipartBody.Part.createFormData("image", mampus, requestBody)
 
                     //we are using coroutine image loader (coil)
-                    binding.imageView.load(bitmap){
+                    binding.imageView.load(bitmap) {
                         crossfade(true)
                         crossfade(1000)
                         transformations(CircleCropTransformation())
                     }
 
-                    AppClient.instance.createPost(palu).enqueue(object : Callback<CreatePostResponse> {
-                        override fun onResponse(call: Call<CreatePostResponse>, response: Response<CreatePostResponse>) {
+                    AppClient.instance.createPost(palu).enqueue(object :
+                        Callback<CreatePostResponse> {
+                        override fun onResponse(
+                            call: Call<CreatePostResponse>,
+                            response: Response<CreatePostResponse>
+                        ) {
                             val responseText = "Response code: ${response.code()}\n" +
                                     "filename : ${response.body()?.filename}\n" +
                                     "input : ${response.body()?.prediction}\n" +
@@ -195,34 +202,22 @@ class CameraActivity : AppCompatActivity() {
 
                 GALLERY_REQUEST_CODE -> {
 
-
-
-                    val image = File(cacheDir, contentResolver.getFileName)
-
-                    val requestBody = RequestBody.create(MediaType.parse("multipart/form"),image)
-
-                    val palu = MultipartBody.Part.createFormData("image",data?.data.toString(), requestBody)
-
-                    binding.imageView.load(data?.data) {
-                        crossfade(true)
-                        crossfade(1000)
-                        transformations(CircleCropTransformation())
-                    }
-
-                    AppClient.instance.createPost(palu).enqueue(object : Callback<CreatePostResponse> {
-                        override fun onResponse(call: Call<CreatePostResponse>, response: Response<CreatePostResponse>) {
-                            val responseText = "Response code: ${response.code()}\n" +
-                                    "filename : ${response.body()?.filename}\n" +
-                                    "input : ${response.body()?.prediction}\n" +
-                                    "success : ${response.body()?.success}\n"
-                            tvResnponse.text = responseText
-                        }
-
-                        override fun onFailure(call: Call<CreatePostResponse>, t: Throwable) {
-                            tvResnponse.text = t.message
-                        }
-
-                    })
+                    binding.imageView.load(data?.data)
+//                    val image = data?.data
+//                    AppClient.instance.createPost(image).enqueue(object : Callback<CreatePostResponse> {
+//                        override fun onResponse(call: Call<CreatePostResponse>, response: Response<CreatePostResponse>) {
+//                            val responseText = "Response code: ${response.code()}\n" +
+//                                    "filename : ${response.body()?.filename}\n" +
+//                                    "input : ${response.body()?.prediction}\n" +
+//                                    "success : ${response.body()?.success}\n"
+//                            tvResnponse.text = responseText
+//                        }
+//
+//                        override fun onFailure(call: Call<CreatePostResponse>, t: Throwable) {
+//                            tvResnponse.text = t.message
+//                        }
+//
+//                    })
 
                 }
             }
@@ -234,8 +229,10 @@ class CameraActivity : AppCompatActivity() {
 
     private fun showRotationalDialogForPermission() {
         AlertDialog.Builder(this)
-            .setMessage("It looks like you have turned off permissions"
-                    + "required for this feature. It can be enable under App settings!!!")
+            .setMessage(
+                "It looks like you have turned off permissions"
+                        + "required for this feature. It can be enable under App settings!!!"
+            )
 
             .setPositiveButton("Go TO SETTINGS") { _, _ ->
 
@@ -255,7 +252,8 @@ class CameraActivity : AppCompatActivity() {
             }.show()
     }
 
-//    private fun createPosts() {
+    private fun createPosts() {
+//        val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 //        AppClient.instance.createPost().enqueue(object : Callback<CreatePostResponse> {
 //            override fun onResponse(call: Call<CreatePostResponse>, response: Response<CreatePostResponse>) {
 //                val responseText = "Response code: ${response.code()}\n" +
@@ -269,7 +267,7 @@ class CameraActivity : AppCompatActivity() {
 //            }
 //
 //        })
-//    }
+    }
 
 //    private fun getPhotoFile(fileName: String): File {
 //        val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
